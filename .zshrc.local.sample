@@ -1,0 +1,22 @@
+export LANG=ja_JP.UTF-8
+export EDITOR=vim
+export SVN_EDITOR=vim
+
+export GOROOT=$HOME/local/go
+export GOPATH=$HOME/_go
+
+export PATH=/usr/local/bin:$PATH:/usr/local/go/bin$GOROOT/bin:$GOPATH/bin
+
+#function find {
+#    /usr/bin/find $@ ! -path "*.svn*"
+#}
+
+unsetopt flow_control
+setopt no_flow_control
+
+export PATH=$HOME/.plenv/bin:$PATH
+export PATH=$PATH:/usr/local/erlang/R16B02/bin
+#eval "$(plenv init -)"
+
+export PATH="$HOME/.rbenv/bin:$PATH"
+eval "$(rbenv init -)"
