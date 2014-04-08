@@ -27,60 +27,70 @@ else
     " 'build'が指定されているのでインストール時に自動的に
     " 指定されたコマンドが実行され vimproc がコンパイルされる
     NeoBundle "Shougo/vimproc", {
-        \ "build": {
-        \   "windows"   : "make -f make_mingw32.mak",
-        \   "cygwin"    : "make -f make_cygwin.mak",
-        \   "mac"       : "make -f make_mac.mak",
-        \   "unix"      : "make -f make_unix.mak",
-        \ }}
+                \ "build": {
+                \   "windows"   : "make -f make_mingw32.mak",
+                \   "cygwin"    : "make -f make_cygwin.mak",
+                \   "mac"       : "make -f make_mac.mak",
+                \   "unix"      : "make -f make_unix.mak",
+                \ }}
 
     """"""""""""""""""
     " My Bundles here:
 
     """ ネオコン
     NeoBundleLazy 'Shougo/neocomplcache.vim', {
-        \ "autoload": {"insert": 1}}
+                \ "autoload": {"insert": 1}}
 
     """ HTMLが開かれるまでロードしない
     NeoBundleLazy 'mattn/zencoding-vim', {
-        \ "autoload": {"filetypes": ['html']}}
+                \ "autoload": {"filetypes": ['html']}}
 
     """ tabの可視化
     NeoBundle "nathanaelkane/vim-indent-guides"
 
     """ vim quickrun async
     NeoBundleLazy "thinca/vim-quickrun", {
-          \     "autoload": {
-          \     "mappings": [['nxo', '<Plug>(quickrun)']]
-          \ }}
+                \     "autoload": {
+                \     "mappings": [['nxo', '<Plug>(quickrun)']]
+                \ }}
 
     " syntastic
     NeoBundle "scrooloose/syntastic", {
-          \ "build": {
-          \   "mac": ["pip install flake8"],
-          \   "unix": ["pip install flake8"],
-          \ }}
+                \ "build": {
+                \   "mac": ["pip install flake8"],
+                \   "unix": ["pip install flake8"],
+                \ }}
 
     " Djangoを正しくVimで読み込めるようにする
     NeoBundleLazy "lambdalisue/vim-django-support", {
-          \ "autoload": {
-          \   "filetypes": ["python", "python3", "djangohtml"]
-          \ }}
+                \ "autoload": {
+                \   "filetypes": ["python", "python3", "djangohtml"]
+                \ }}
     " Vimで正しくvirtualenvを処理できるようにする
     NeoBundleLazy "jmcantrell/vim-virtualenv", {
-          \ "autoload": {
-          \   "filetypes": ["python", "python3", "djangohtml"]
-          \ }}
+                \ "autoload": {
+                \   "filetypes": ["python", "python3", "djangohtml"]
+                \ }}
 
     " jedi
     NeoBundleLazy "davidhalter/jedi-vim", {
-          \ "autoload": {
-          \   "filetypes": ["python", "python3", "htmldjango"],
-          \   "build": {
-          \     "mac": "pip install jedi",
-          \     "unix": "pip install jedi",
-          \   }
-          \ }}
+                \ "autoload": {
+                \   "filetypes": ["python", "python3", "htmldjango"],
+                \   "build": {
+                \     "mac": "pip install jedi",
+                \     "unix": "pip install jedi",
+                \   }
+                \ }}
+
+    " C#
+    NeoBundleLazy 'nosami/Omnisharp', {
+                \   'autoload': {'filetypes': ['cs']},
+                \   'build': {
+                \     'windows': 'MSBuild.exe server/OmniSharp.sln /p:Platform="Any CPU"',
+                \     'mac': 'xbuild server/OmniSharp.sln',
+                \     'unix': 'xbuild server/OmniSharp.sln',
+                \   }
+                \ }
     " pyflakes-vim
     " NeoBundleLazy "mitechie/pyflakes-pathogen", {
     "       \ "autoload": {
@@ -113,7 +123,8 @@ else
 endif
 
 " ファイルタイププラグインおよびインデントを有効化
-filetype plugin indent on
+filetype plugin on
+filetype indent on
 
 
 
@@ -122,11 +133,11 @@ filetype plugin indent on
 "
 
 " neocomplcache
-let s:hooks_neocom = neobundle#get_hooks("neocomplcache.vim")
-function! s:hooks_neocom.on_source(bundle)
-    let g:neocomplcache_enable_at_startup = 0
+"let s:hooks_neocom = neobundle#get_hooks("neocomplcache.vim")
+"function! s:hooks_neocom.on_source(bundle)
+    "let g:neocomplcache_enable_at_startup = 0
     "let g:neocomplcache_omni_functions['python'] = 'jedi#completions'
-endfunction
+"endfunction
 
 
 " jedi-vim
@@ -179,12 +190,29 @@ let s:hooks = neobundle#get_hooks("syntastic")
 function! s:hooks.on_source(bundle)
     let g:syntastic_check_on_open=1
     let g:syntastic_python_checkers=["flake8"]
-    let g:syntastic_javascript_checkers=["gjslint"]
+    let g:syntastic_javascrip_checkers=["gjslint"]
+    let g:syntastic_cs_checkers = ["syntax", "issues"]
     " syntasticしてほしいのは js, php, perl
     let g:syntax_mode_map = {'mode' : 'active',
       \ 'active_filetypes': ['javascript', 'php', 'perl'],
       \ 'passive_filetypes': ['sh'] }
 endfunction
+
+" OmniSharp
+let s:hooks = neobundle#get_hooks("omnisharp")
+function! s:hooks.on_source(bundle)
+    autocmd BufEnter,TextChanged,InsertLeave *.cs SyntasticCheck
+    autocmd CursorHold *.cs call OmniSharp#TypeLookupWithoutDocumentation()
+endfunction
+
+" vimproc
+if has('mac')
+  let g:vimproc_dll_path = $HOME . '.vim/bundle/vimproc/autoload/vimproc_mac.so'
+elseif has('win32')
+  let g:vimproc_dll_path = $HOME . '.vim/bundle/vimproc/autoload/vimproc_win32.dll'
+elseif has('win64')
+  let g:vimproc_dll_path = $HOME . '.vim/bundle/vimproc/autoload/vimproc_win64.dll'
+endif
 
 
 
@@ -324,7 +352,7 @@ set list           " 不可視文字の可視化
 set number         " 行数
 set wrap           " 折り返す
 set textwidth=0    " 自動改行の無効化
-set colorcolumn=80 " 80文字目にライン
+"set colorcolumn=80 " 80文字目にライン
 
 " デフォルト不可視文字をUnicodeで可視化
 set listchars=tab:❘\ ,trail:-,extends:»,precedes:«,nbsp:% ",eol:↲
@@ -430,7 +458,9 @@ map <silent> sP :call YanktmpPaste_P()<CR>
 
 "-----------------------------------------------------------------------------
 " 補完機能
-"
+
+let g:neocomplcache_enable_at_startup = 1
+
 " Enable omni completion.
 autocmd FileType css setlocal omnifunc=csscomplete#CompleteCSS
 autocmd FileType html,markdown setlocal omnifunc=htmlcomplete#CompleteTags
@@ -440,17 +470,16 @@ autocmd FileType javascript setlocal omnifunc=javascriptcomplete#CompleteJS
 set completeopt-=preview "PydocのWindowは出さない
 autocmd FileType xml setlocal omnifunc=xmlcomplete#CompleteTags
 autocmd FileType ruby setlocal omnifunc=rubycomplete#Complete
+autocmd FileType cs setlocal omnifunc=OmniSharp#Complete
 
 "" Enable heavy omni completion.
-"if !exists('g:neocomplcache_omni_patterns')
-"	let g:neocomplcache_omni_patterns = {}
-"endif
-"let g:neocomplcache_omni_patterns.ruby = '[^. *\t]\.\w*\|\h\w*::'
-"let g:neocomplcache_omni_patterns.php = '[^. \t]->\h\w*\|\h\w*::'
+if !exists('g:neocomplcache_force_omni_patterns')
+    let g:neocomplcache_force_omni_patterns = {}
+endif
+let g:neocomplcache_force_omni_patterns.ruby = '[^. *\t]\.\w*\|\h\w*::'
+let g:neocomplcache_force_omni_patterns.php = '[^. \t]->\h\w*\|\h\w*::'
+let g:neocomplcache_force_omni_patterns.cs = '.*' "'[^.]\.\%(\u\{2,}\)\?'
 
-" neocomplcache {{{
-let g:neocomplcache_enable_at_startup = 1
-" }}}
 
 
 "--------------------------------------------------------------------
@@ -522,18 +551,14 @@ augroup vimrc-auto-cursorline
 augroup END
 
 
-
-
 " .vimrcを楽に編集
 "nnoremap <Space>. :<C-u>edit $MYVIMRC<Enter>
 "nnoremap <Space>s. :<C-u>source $MYVIMRC<Enter>
 
 
-
 "--------------------------------------------------------------------------
 " Python関連
 "autocmd Filetype python setl smartindent cinwords=if,elif,else,for,while,try,except,finally,def,class
-
 
 
 " ~/.vimrc.localが存在する場合のみ設定を読み込む
