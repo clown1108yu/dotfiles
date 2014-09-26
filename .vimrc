@@ -133,11 +133,11 @@ filetype indent on
 "
 
 " neocomplcache
-"let s:hooks_neocom = neobundle#get_hooks("neocomplcache.vim")
-"function! s:hooks_neocom.on_source(bundle)
-    "let g:neocomplcache_enable_at_startup = 0
+let s:hooks_neocom = neobundle#get_hooks("neocomplcache.vim")
+function! s:hooks_neocom.on_source(bundle)
+    let g:neocomplcache_enable_at_startup = 0
     "let g:neocomplcache_omni_functions['python'] = 'jedi#completions'
-"endfunction
+endfunction
 
 
 " jedi-vim
@@ -166,12 +166,12 @@ endfunction
 " vim-indent-guides
 let s:hooks = neobundle#get_hooks("vim-indent-guides")
 function! s:hooks.on_source(bundle)
-    let g:indent_guides_start_level = 2
+    let g:indent_guides_start_level = 1
     let g:indent_guides_guide_size = 1
     let g:indent_guides_auto_colors = 0
     colorscheme default
-    hi IndentGuidesOdd ctermbg=darkgray
-    hi IndentGuidesEven ctermbg=darkgray
+    "hi IndentGuidesOdd ctermbg=darkgray
+    "hi IndentGuidesEven ctermbg=darkgray
     IndentGuidesEnable
 endfunction
 
@@ -297,10 +297,6 @@ syntax enable
 if exists("syntax")
     syntax on
 endif
-
-"タブの左側にカーソル表示
-set listchars=tab:\ \
-set list
 
 "タブ, インデント関連
 set tabstop=4      " タブは4文字
@@ -442,6 +438,7 @@ cmap w!! w !sudo tee > /dev/null %
 
 " The Nerd Tree {{{
 nmap <Leader>n :NERDTreeToggle<CR>
+let NERDTreeIgnore = ['\.pyc$']
 " }}}
 
 " TagBar {{{
@@ -459,7 +456,7 @@ map <silent> sP :call YanktmpPaste_P()<CR>
 "-----------------------------------------------------------------------------
 " 補完機能
 
-let g:neocomplcache_enable_at_startup = 1
+let g:neocomplcache_enable_at_startup = 0
 
 " Enable omni completion.
 autocmd FileType css setlocal omnifunc=csscomplete#CompleteCSS
@@ -467,10 +464,10 @@ autocmd FileType html,markdown setlocal omnifunc=htmlcomplete#CompleteTags
 autocmd FileType javascript setlocal omnifunc=javascriptcomplete#CompleteJS
 "autocmd Filetype python let b:did_ftplugin = 1
 "autocmd FileType python setlocal omnifunc=pythoncomplete#Complete
-set completeopt-=preview "PydocのWindowは出さない
 autocmd FileType xml setlocal omnifunc=xmlcomplete#CompleteTags
 autocmd FileType ruby setlocal omnifunc=rubycomplete#Complete
 autocmd FileType cs setlocal omnifunc=OmniSharp#Complete
+set completeopt-=preview "PydocのWindowは出さない
 
 "" Enable heavy omni completion.
 if !exists('g:neocomplcache_force_omni_patterns')
@@ -480,6 +477,16 @@ let g:neocomplcache_force_omni_patterns.ruby = '[^. *\t]\.\w*\|\h\w*::'
 let g:neocomplcache_force_omni_patterns.php = '[^. \t]->\h\w*\|\h\w*::'
 let g:neocomplcache_force_omni_patterns.cs = '.*' "'[^.]\.\%(\u\{2,}\)\?'
 
+
+"" Golang
+filetype off
+filetype plugin indent off
+set runtimepath+=$GOROOT/misc/vim
+filetype plugin indent on
+syntax on
+autocmd FileType go autocmd BufWritePre <buffer> Fmt
+exe "set rtp+=".globpath($GOPATH, "src/github.com/nsf/gocode/vim")
+set completeopt=menu,preview
 
 
 "--------------------------------------------------------------------
