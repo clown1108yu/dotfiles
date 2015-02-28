@@ -18,7 +18,7 @@ else
     if has('vim_starting')
         execute "set runtimepath+=" . s:neobundle_root
     endif
-    call neobundle#rc(s:bundle_root)
+    call neobundle#begin(s:bundle_root)
 
     " NeoBundle自身をNeoBundleで管理
     NeoBundleFetch 'Shougo/neobundle.vim'
@@ -109,6 +109,8 @@ else
     NeoBundle 'lambdalisue/vim-python-virtualenv'
     NeoBundle 'YankRing.vim'
     NeoBundle 'scrooloose/nerdtree'
+    NeoBundle 'plasticboy/vim-markdown'
+    NeoBundle 'mxw/vim-jsx'  " react.js
     "NeoBundle 'mitechie/pyflakes-pathogen'
     "NeoBundle 'reinh/vim-makegreen'
 
@@ -120,6 +122,8 @@ else
 
     " インストールされていないプラグインのチェックおよびダウンロード
     NeoBundleCheck
+
+    call neobundle#end()
 endif
 
 " ファイルタイププラグインおよびインデントを有効化
@@ -204,6 +208,10 @@ function! s:hooks.on_source(bundle)
     autocmd BufEnter,TextChanged,InsertLeave *.cs SyntasticCheck
     autocmd CursorHold *.cs call OmniSharp#TypeLookupWithoutDocumentation()
 endfunction
+
+" vim-markdown
+" デフォルトで折りたたまない
+let g:vim_markdown_folding_disabled=1
 
 " vimproc
 if has('mac')
