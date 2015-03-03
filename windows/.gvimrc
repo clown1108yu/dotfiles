@@ -6,3 +6,4 @@ colorscheme desert
 
 set columns=120  " デフォルト幅
 set lines=90     " デフォルト高さ
+set undodir=%homepath%/.vim/undo " undoファイル保存先
