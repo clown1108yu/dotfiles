@@ -1,4 +1,6 @@
 ### .zshrc
+autoload -U compinit
+compinit
 
 # Emacs style key binding
 bindkey -e
@@ -188,5 +190,5 @@ alias pd="pushd"
 alias po="popd"
 alias :q="exit"
 
-source virtualenvwrapper.sh
-source ~/.zshrc.local
+test -f  virtualenvwrapper.sh && virtualenvwrapper.sh
+test -f ~/.zshrc.local && . ~/.zshrc.local

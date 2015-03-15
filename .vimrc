@@ -352,14 +352,14 @@ set completeopt=longest,menuone,preview
 "
 set vb t_vb=       " ベル消灯
 set novisualbell
-set list           " 不可視文字の可視化
+"set list           " 不可視文字の可視化
 set number         " 行数
 set wrap           " 折り返す
 set textwidth=0    " 自動改行の無効化
 "set colorcolumn=80 " 80文字目にライン
 
 " デフォルト不可視文字をUnicodeで可視化
-set listchars=tab:❘\ ,trail:-,extends:»,precedes:«,nbsp:% ",eol:↲
+"set listchars=tab:❘\ ,trail:-,extends:»,precedes:«,nbsp:% ",eol:↲
 
 "-----------------------------------------------------------------------------
 " クリップボード
